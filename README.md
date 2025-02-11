@@ -64,4 +64,79 @@ Get in Touch!
 Let us take care of your lawn & trees—because when it’s in God’s hands, it’s done right!
 
 
+E.G.:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In God's Hands Lawn & Tree Service</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #004080;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #002060;
+            padding: 20px;
+        }
+        .logo {
+            max-width: 200px;
+        }
+        section {
+            padding: 20px;
+        }
+        .gallery img {
+            max-width: 30%;
+            margin: 10px;
+            border-radius: 10px;
+        }
+        footer {
+            background-color: #002060;
+            padding: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="logo.png" alt="In God's Hands Lawn & Tree Service Logo" class="logo">
+        <h1>Welcome to In God's Hands Lawn & Tree Service</h1>
+    </header>
+    
+    <section class="about">
+        <h2>About Us</h2>
+        <p>Providing professional and faith-driven lawn and tree services in Stow, Ohio. Our team is dedicated to delivering quality work with integrity and care.</p>
+    </section>
+    
+    <section class="services">
+        <h2>Our Services</h2>
+        <ul>
+            <li>Lawn Mowing & Maintenance</li>
+            <li>Tree Trimming & Removal</li>
+            <li>Snow Removal Services</li>
+            <li>Landscaping & Mulching</li>
+            <li>Seasonal Cleanup</li>
+        </ul>
+    </section>
+    
+    <section class="gallery">
+        <h2>Our Work</h2>
+        <img src="photo1.jpg" alt="Lawn Service 1">
+        <img src="photo2.jpg" alt="Tree Service 2">
+        <img src="photo3.jpg" alt="Snow Removal 3">
+    </section>
+    
+    <footer>
+        <p>Contact us: 330-510-0382 | Email: info@ingodshands.com</p>
+        <p>&copy; 2025 In God's Hands Lawn & Tree Service</p>
+    </footer>
+</body>
+</html>
+
 

@@ -2,13 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Lawn Mowing Cost</title>
+  <title>Lawn Mowing Cost Calculator (Piecewise Formula)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Responsive on mobile -->
   <style>
     body {
       font-family: Arial, sans-serif;
+      margin: 0 auto;
+      padding: 20px;
       max-width: 600px;
-      margin: 20px auto;
       text-align: center;
+    }
+    h1, h2 {
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
     }
     input, button {
       margin: 8px;
@@ -22,9 +28,14 @@
     }
     iframe {
       width: 100%;
-      height: 400px; /* Adjust as needed */
+      height: 350px;
       border: 1px solid #ccc;
-      margin-top: 10px;
+      margin: 10px 0;
+    }
+    @media (max-width: 600px) {
+      /* Simple mobile-friendly adjustments, if needed */
+      body { padding: 10px; }
+      iframe { height: 300px; }
     }
   </style>
 </head>
@@ -33,50 +44,79 @@
 <h1>Lawn Mowing Cost Calculator</h1>
 
 <p>
-  <strong>Need to know your lawn square footage?</strong><br>
-  Use the embedded tool below to measure your lawn area. 
-  If it doesn’t load, 
-  <a href="https://www.measuremylawn.com" target="_blank">open MeasureMyLawn in a new tab</a>.
+  <strong>Don’t know your lawn’s square footage?</strong> <br>
+  Use the embedded measure tool below. If it doesn’t load, 
+  <a href="https://www.measuremylawn.com" target="_blank">open it in a new tab</a>.
 </p>
 
 <iframe src="https://www.measuremylawn.com" title="MeasureMyLawn"></iframe>
 
-<!-- Step 1: User enters sq ft -->
-<div>
-  <h2>Enter Lawn Square Footage</h2>
-  <input type="number" id="lawnSqFt" placeholder="e.g. 3000">
-  <br>
-  <button onclick="calculateMowing()">Calculate Mowing Cost</button>
-</div>
+<h2>Enter Lawn Square Footage</h2>
+<input type="number" id="lawnSqFt" placeholder="e.g. 21780 (≈1/2 acre)">
+
+<br>
+<button onclick="calculateEstimate()">Calculate</button>
 
 <p id="result"></p>
 
-<!-- Other services -->
-<div style="margin-top: 30px;">
-  <h3>Need Other Services?</h3>
-  <p>
-    Please contact us at <strong>ingodshandslawn@outlook.com</strong><br>
-    for inquiries about tree trimming, mulching, weeding, gravel work,<br>
-    gutter cleaning, aeration, and more.
-  </p>
-</div>
-
 <script>
-function calculateMowing() {
-  const sqFtInput = document.getElementById("lawnSqFt");
+function calculateEstimate() {
   const resultEl = document.getElementById("result");
+  const sqFtVal = parseFloat(document.getElementById("lawnSqFt").value || "0");
   resultEl.innerText = "";
 
-  const lawnSqFt = parseFloat(sqFtInput.value || "0");
-  if (lawnSqFt <= 0) {
+  if (sqFtVal <= 0) {
     resultEl.innerText = "Please enter a valid lawn size in square feet.";
     return;
   }
 
-  // Basic formula: e.g., min $25, else $0.02 per sq ft
-  const price = Math.max(25, 0.02 * lawnSqFt);
+  // Convert sq ft to acres
+  const acres = sqFtVal / 43560;
 
-  resultEl.innerText = `Estimated Mowing Cost: $${price.toFixed(2)}`;
+  // We'll map it to your piecewise formula:
+  // 1/4 acre ~ 10890 sq ft
+  // 1/2 acre ~ 21780
+  // 1 acre   ~ 43560
+  // 2 acres  ~ 87120
+  // 3 acres  ~ 130680
+  // 5 acres  ~ 217800
+  // 10 acres ~ 435600
+  // Then display your bracket-based time + cost.
+
+  let timeRange = "";
+  let costRange = "";
+
+  if (acres <= 0.25) {
+    timeRange = "15 – 30 min.";
+    costRange = "$20 – $40";
+  } else if (acres <= 0.5) {
+    timeRange = "30 min. – 1 hr.";
+    costRange = "$40 – $70";
+  } else if (acres <= 1.0) {
+    timeRange = "1 – 2 hrs.";
+    costRange = "$100 – $150";
+  } else if (acres <= 2.0) {
+    timeRange = "2 – 4 hrs.";
+    costRange = "$150 – $200";
+  } else if (acres <= 3.0) {
+    timeRange = "3 – 6 hrs.";
+    costRange = "$200 – $500";
+  } else if (acres <= 5.0) {
+    timeRange = "5 – 10 hrs.";
+    costRange = "$500 – $650";
+  } else if (acres <= 10.0) {
+    timeRange = "10 – 100 hrs.";
+    costRange = "$500 – $750";
+  } else {
+    // over 10 acres
+    timeRange = "More than 10 acres";
+    costRange = "Please contact us for a quote";
+  }
+
+  let output = `Lawn Size: ~${acres.toFixed(2)} acre(s)\n`;
+  output += `Estimated Time: ${timeRange}\n`;
+  output += `Estimated Cost: ${costRange}`;
+  resultEl.innerText = output;
 }
 </script>
 

@@ -1,166 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lawn Care Estimate</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        input, button, select { padding: 10px; margin: 10px; width: 90%; max-width: 400px; }
-        #quoteResult { font-size: 20px; font-weight: bold; margin-top: 10px; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lawn Care Estimate</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+    input, button, select {
+      padding: 10px;
+      margin: 10px;
+      width: 90%;
+      max-width: 400px;
+    }
+    #quoteResult { font-size: 20px; font-weight: bold; margin-top: 10px; }
+  </style>
 </head>
 <body>
 
-    <h2>Get Your Lawn Care Estimate (Cleveland & Summit County)</h2>
-    
-    <label for="address">Enter Your Address:</label>
-    <input type="text" id="address" placeholder="123 Main St, Cleveland, OH">
-    <button onclick="fetchLawnSize()">Get Estimate</button>
+<h2>Get Your Lawn Care Estimate (Cleveland Area)</h2>
 
-    <p id="lawnSizeResult"></p>
+<label for="address">Enter Your Address:</label>
+<input type="text" id="address" placeholder="123 Main St, Cleveland, OH" />
+<button onclick="fetchLawnSize()">Get Estimate</button>
 
-    <h3>Select Services:</h3>
-    <select id="services">
-        <option value="mowing">Lawn Mowing & Maintenance (Starting at $20)</option>
-        <option value="trimming">Tree Trimming & Removal</option>
-        <option value="shrubs">Bush & Shrub Trimming (Starting at $20)</option>
-        <option value="mulching">Mulching ($70 per yard)</option>
-        <option value="weeding">Weeding & Flower Bed Maintenance ($50 per bed)</option>
-        <option value="gravel">Gravel Installation & Driveway Work</option>
-        <option value="gutter">Gutter Cleaning & Roof Debris Removal</option>
-        <option value="aeration">Seasonal Aeration Services</option>
-    </select>
+<p id="lawnSizeResult"></p>
 
-    <button onclick="calculateEstimate()">Calculate Cost</button>
-    
-    <p id="quoteResult"></p>
+<h3>Select Services:</h3>
+<select id="services">
+  <option value="mowing">Lawn Mowing & Maintenance (Starting at $20)</option>
+  <option value="trimming">Tree Trimming & Removal</option>
+  <option value="shrubs">Bush & Shrub Trimming (Starting at $20)</option>
+  <option value="mulching">Mulching ($70 per yard)</option>
+  <option value="weeding">Weeding & Flower Bed Maintenance ($50 per bed)</option>
+  <option value="gravel">Gravel Installation & Driveway Work</option>
+  <option value="gutter">Gutter Cleaning & Roof Debris Removal</option>
+  <option value="aeration">Seasonal Aeration Services</option>
+</select>
 
-    <script>
-        async function fetchLawnSize() {
-            let address = document.getElementById("address").value;
+<button onclick="calculateEstimate()">Calculate Cost</button>
 
-            if (!address) {
-                document.getElementById("lawnSizeResult").innerText = "Please enter a valid address.";
-                return;
-            }
+<p id="quoteResult"></p>
 
-            try {
-                // Geocode address to get lat/lon
-                let geocodeResponse = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
-                let geocodeData = await geocodeResponse.json();
+<script>
+  /**
+   * 1) Fetch Lat/Lon via Nominatim (OpenStreetMap)
+   * 2) Then fetch parcel data from county's API if possible
+   * 3) Store lawn size in dataset.size
+   */
+  async function fetchLawnSize() {
+    let address = document.getElementById("address").value.trim();
 
-                if (!geocodeData.length) {
-                    throw new Error("Address not found.");
-                }
+    if (!address) {
+      document.getElementById("lawnSizeResult").innerText = "Please enter a valid address.";
+      return;
+    }
 
-                let location = geocodeData[0];
-                let lat = location.lat;
-                let lon = location.lon;
+    try {
+      // 1) Geocode address -> lat/lon
+      let geoRes = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`
+      );
+      let geoData = await geoRes.json();
 
-                // Determine county and use the correct API
-                let parcelSize = await fetchParcelSize(lat, lon);
+      if (!geoData.length) {
+        throw new Error("Address not found.");
+      }
 
-                document.getElementById("lawnSizeResult").innerText = "Estimated Lawn Size: " + parcelSize + " sq ft";
-                document.getElementById("lawnSizeResult").dataset.size = parcelSize;
+      let { lat, lon } = geoData[0];
 
-            } catch (error) {
-                document.getElementById("lawnSizeResult").innerText = "Error fetching property size.";
-                console.error(error);
-            }
+      // 2) Attempt to fetch actual parcel size
+      let parcelSize = await fetchParcelSize(lat, lon);
+
+      // 3) Display or fallback to random
+      document.getElementById("lawnSizeResult").innerText =
+        `Estimated Lawn Size: ${parcelSize} sq ft`;
+      document.getElementById("lawnSizeResult").dataset.size = parcelSize;
+    } catch (error) {
+      document.getElementById("lawnSizeResult").innerText =
+        "Error fetching property size. Please try again.";
+      console.error(error);
+    }
+  }
+
+  /**
+   * Attempt to fetch from Cuyahoga / Summit county GIS.
+   * Fallback: random estimate if not found.
+   */
+  async function fetchParcelSize(lat, lon) {
+    let size = null;
+
+    // Attempt: Cuyahoga county API (example placeholder)
+    try {
+      let cuyahogaRes = await fetch(
+        `https://gis.cuyahogacounty.us/api/v1/parcels?lat=${lat}&lon=${lon}`
+      );
+      let cuyahogaData = await cuyahogaRes.json();
+
+      if (
+        cuyahogaData &&
+        cuyahogaData.features &&
+        cuyahogaData.features.length > 0
+      ) {
+        size = parseInt(cuyahogaData.features[0].properties.AREA_SQFT, 10);
+      }
+    } catch (err) {
+      console.log("Cuyahoga fetch failed:", err);
+    }
+
+    // Attempt: Summit county API
+    if (!size) {
+      try {
+        // EXAMPLE URL: must adapt to real endpoints
+        let summitRes = await fetch(
+          `https://gis.summitcountyoh.net/arcgis/rest/services/Parcels/MapServer/0/query?where=1%3D1&outFields=*&geometry=${lon},${lat}&geometryType=esriGeometryPoint&spatialRel=esriSpatialRelIntersects&outSR=4326&f=json`
+        );
+        let summitData = await summitRes.json();
+        if (summitData && summitData.features && summitData.features.length) {
+          size = parseInt(
+            summitData.features[0].attributes.AREA_SQFT,
+            10
+          );
         }
+      } catch (err) {
+        console.log("Summit fetch failed:", err);
+      }
+    }
 
-        async function fetchParcelSize(lat, lon) {
-            let parcelSize = null;
+    // Fallback to random guess if no data found
+    if (!size) {
+      size = Math.floor(Math.random() * 4000) + 1000; // 1,000 - 5,000
+    }
 
-            // Try Cuyahoga County GIS API
-            try {
-                let cuyahogaResponse = await fetch(`https://gis.cuyahogacounty.us/api/v1/parcels?lat=${lat}&lon=${lon}`);
-                let cuyahogaData = await cuyahogaResponse.json();
+    return size;
+  }
 
-                if (cuyahogaData && cuyahogaData.features && cuyahogaData.features.length > 0) {
-                    parcelSize = cuyahogaData.features[0].properties.AREA_SQFT;
-                }
-            } catch (error) {
-                console.log("Cuyahoga API error:", error);
-            }
+  /**
+   * Calculate estimates for each service
+   * using typical Cleveland-area pricing.
+   */
+  function calculateEstimate() {
+    let size = document.getElementById("lawnSizeResult").dataset.size;
+    let service = document.getElementById("services").value;
+    let low = 0, high = 0;
 
-            // If no data from Cuyahoga, try Summit County API
-            if (!parcelSize) {
-                try {
-                    let summitResponse = await fetch(`https://gis.summitcountyoh.net/arcgis/rest/services/Parcels/MapServer/0/query?where=1%3D1&outFields=*&geometry=${lon},${lat}&geometryType=esriGeometryPoint&spatialRel=esriSpatialRelIntersects&outSR=4326&f=json`);
-                    let summitData = await summitResponse.json();
+    if (!size) {
+      document.getElementById("quoteResult").innerText =
+        "Please get your lawn size estimate first.";
+      return;
+    }
 
-                    if (summitData && summitData.features && summitData.features.length > 0) {
-                        parcelSize = summitData.features[0].attributes.AREA_SQFT;
-                    }
-                } catch (error) {
-                    console.log("Summit API error:", error);
-                }
-            }
+    size = parseInt(size);
 
-            // Default estimate if parcel data is missing
-            return parcelSize || Math.floor(Math.random() * 5000) + 1000; // 1,000 - 6,000 sq ft
+    switch (service) {
+      case "mowing":
+        // Tiered lawn mowing costs:
+        if (size <= 5000) {
+          low = 20;  high = 40;
+        } else if (size <= 10000) {
+          low = 40;  high = 80;
+        } else if (size <= 20000) {
+          low = 80;  high = 130;
+        } else {
+          low = 120; high = 180;
         }
+        break;
 
-        function calculateEstimate() {
-            let size = document.getElementById("lawnSizeResult").dataset.size;
-            let service = document.getElementById("services").value;
-            let lowPrice = 0;
-            let highPrice = 0;
+      case "trimming":
+        // Tree trimming & removal
+        low = 200; high = 600;
+        break;
 
-            if (!size) {
-                document.getElementById("quoteResult").innerText = "Please enter your address first.";
-                return;
-            }
+      case "shrubs":
+        // Bush & shrub trimming
+        low = 20;  high = 80;
+        break;
 
-            size = parseInt(size);
+      case "mulching":
+        // $70 per yard, assume 5% of lawn area needs mulch
+        // 1 yard covers ~100 sq ft (3" depth)
+        let mulchArea = size * 0.05; 
+        let yardsNeeded = mulchArea / 100; 
+        if (yardsNeeded < 1) yardsNeeded = 1; // minimum 1 yard
+        low = yardsNeeded * 70; 
+        high = low + 30; // add some labor buffer
+        break;
 
-            switch(service) {
-                case "mowing":
-                    // Apply per-square-foot pricing: $0.12 - $0.27
-                    lowPrice = size * 0.12;
-                    highPrice = size * 0.27;
+      case "weeding":
+        // $50 per bed, or $50 - $100 range
+        low = 50; high = 100;
+        break;
 
-                    // Minimum charge handling for small lawns
-                    if (size < 500) {
-                        lowPrice = Math.max(lowPrice, 62);
-                        highPrice = Math.max(highPrice, 135);
-                    }
-                    break;
-                case "trimming":
-                    lowPrice = 50;
-                    highPrice = 100;
-                    break;
-                case "shrubs":
-                    lowPrice = 20;
-                    highPrice = 50;
-                    break;
-                case "mulching":
-                    lowPrice = Math.ceil(size / 1000) * 70;
-                    highPrice = lowPrice + 30;
-                    break;
-                case "weeding":
-                    lowPrice = 50;
-                    highPrice = 100;
-                    break;
-                case "gravel":
-                    lowPrice = 100;
-                    highPrice = 200;
-                    break;
-                case "gutter":
-                    lowPrice = 75;
-                    highPrice = 150;
-                    break;
-                case "aeration":
-                    lowPrice = 60;
-                    highPrice = 120;
-                    break;
-            }
+      case "gravel":
+        // Gravel installation / driveway work
+        // We'll do a broad range
+        low = 150; high = 500;
+        break;
 
-            document.getElementById("quoteResult").innerText = `Estimated Cost: $${lowPrice.toFixed(2)} - $${highPrice.toFixed(2)}`;
-        }
-    </script>
+      case "gutter":
+        // Gutter cleaning
+        low = 75; high = 150;
+        break;
 
+      case "aeration":
+        // Seasonal aeration
+        low = 60; high = 120;
+        break;
+    }
+
+    document.getElementById("quoteResult").innerText =
+      `Estimated Cost: $${low.toFixed(2)} - $${high.toFixed(2)}`;
+  }
+</script>
 </body>
 </html>

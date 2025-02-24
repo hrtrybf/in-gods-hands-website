@@ -1,149 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Summit County Lawn Mowing Estimate</title>
+  <meta charset="UTF-8">
+  <title>Lawn Mowing Cost</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 700px;
+      max-width: 600px;
       margin: 20px auto;
       text-align: center;
     }
-    #status, #result {
-      font-weight: bold;
-      margin: 10px 0;
-      white-space: pre-line; /* allows \n newlines */
-    }
     input, button {
+      margin: 8px;
       padding: 10px;
-      margin: 10px;
       width: 80%;
       max-width: 300px;
     }
-    .services {
+    #result {
+      font-weight: bold;
       margin-top: 20px;
-      text-align: left;
-      display: inline-block;
-      padding-left: 20px;
+    }
+    iframe {
+      width: 100%;
+      height: 400px; /* Adjust as needed */
+      border: 1px solid #ccc;
+      margin-top: 10px;
     }
   </style>
-
-  <!-- Include Papa Parse from a CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 </head>
 <body>
 
-<h2>Summit County Lawn Mowing Estimate</h2>
-<p id="status">Loading Summit County CSV data...</p>
+<h1>Lawn Mowing Cost Calculator</h1>
 
-<!-- Address Input -->
-<label for="userAddress">Enter Address (Exact Match):</label><br>
-<input type="text" id="userAddress" placeholder="e.g. 1723 WESTPORT COVE">
-<br>
-<button onclick="lookupParcel()">Get Lawn Mowing Estimate</button>
+<p>
+  <strong>Need to know your lawn square footage?</strong><br>
+  Use the embedded tool below to measure your lawn area. 
+  If it doesn’t load, 
+  <a href="https://www.measuremylawn.com" target="_blank">open MeasureMyLawn in a new tab</a>.
+</p>
+
+<iframe src="https://www.measuremylawn.com" title="MeasureMyLawn"></iframe>
+
+<!-- Step 1: User enters sq ft -->
+<div>
+  <h2>Enter Lawn Square Footage</h2>
+  <input type="number" id="lawnSqFt" placeholder="e.g. 3000">
+  <br>
+  <button onclick="calculateMowing()">Calculate Mowing Cost</button>
+</div>
 
 <p id="result"></p>
 
-<!-- Other Services Section -->
-<div class="services">
-  <h3>Other Services</h3>
-  <p>Please <strong>inquire</strong> about pricing for:</p>
-  <ul>
-    <li>Tree Trimming</li>
-    <li>Shrub Trimming</li>
-    <li>Mulching</li>
-    <li>Weeding &amp; Flower Bed Maintenance</li>
-    <li>Gravel / Driveway Work</li>
-    <li>Gutter Cleaning &amp; Roof Debris Removal</li>
-    <li>Aeration</li>
-    <!-- etc. -->
-  </ul>
+<!-- Other services -->
+<div style="margin-top: 30px;">
+  <h3>Need Other Services?</h3>
+  <p>
+    Please contact us at <strong>ingodshandslawn@outlook.com</strong><br>
+    for inquiries about tree trimming, mulching, weeding, gravel work,<br>
+    gutter cleaning, aeration, and more.
+  </p>
 </div>
 
 <script>
-let parcelsData = [];
-
-// 1) Load CSV using Papa Parse
-Papa.parse("summit-county-ohio-parcels - summit-county-ohio-parcels.csv", {
-  download: true,
-  header: true,       // first row is column headers
-  skipEmptyLines: true,
-  complete: function(results) {
-    if (results.errors.length) {
-      document.getElementById("status").innerText =
-        "Error parsing CSV: " + results.errors[0].message;
-      console.error(results.errors);
-      return;
-    }
-    parcelsData = results.data;
-    document.getElementById("status").innerText = 
-      "CSV data loaded. Enter an address for a mowing estimate.";
-    console.log("CSV loaded. Number of rows:", parcelsData.length);
-  }
-});
-
-/**
- * 2) Address Lookup -> Mowing Estimate
- * We'll do a simple exact match on ADDR (uppercase).
- */
-function lookupParcel() {
-  const addressInput = document.getElementById("userAddress").value.trim().toUpperCase();
+function calculateMowing() {
+  const sqFtInput = document.getElementById("lawnSqFt");
   const resultEl = document.getElementById("result");
   resultEl.innerText = "";
 
-  // If CSV isn't loaded yet
-  if (!parcelsData.length) {
-    resultEl.innerText = "CSV data not loaded yet. Please wait.";
-    return;
-  }
-  // If user didn't type anything
-  if (!addressInput) {
-    resultEl.innerText = "Please enter an address.";
+  const lawnSqFt = parseFloat(sqFtInput.value || "0");
+  if (lawnSqFt <= 0) {
+    resultEl.innerText = "Please enter a valid lawn size in square feet.";
     return;
   }
 
-  // 3) Search for matching row
-  let foundRow = null;
-  for (let i = 0; i < parcelsData.length; i++) {
-    const rowAddr = (parcelsData[i].ADDR || "").toUpperCase().trim();
-    if (rowAddr === addressInput) {
-      foundRow = parcelsData[i];
-      break;
-    }
-  }
-
-  // If not found
-  if (!foundRow) {
-    resultEl.innerText = "No exact match found for that address. Please check your spelling.";
-    return;
-  }
-
-  // 4) Convert CALCARES to sq ft
-  const acresStr = foundRow.CALCARES || "0";
-  const acresVal = parseFloat(acresStr);
-  if (!acresVal) {
-    resultEl.innerText = `Found parcel, but CALCARES is invalid or zero for this address.`;
-    return;
-  }
-  const lawnSqFt = acresVal * 43560;
-
-  // 5) Simple cost formula for lawn mowing
-  // E.g. Price = max($25, 0.02 * lawnSqFt)
+  // Basic formula: e.g., min $25, else $0.02 per sq ft
   const price = Math.max(25, 0.02 * lawnSqFt);
 
-  // 6) Display results (including city, zip)
-  const city = foundRow.CITYNAME || "Unknown city";
-  const zip = foundRow.OWNZIP1 || "Unknown ZIP";
-
-  const output = 
-    "Address: " + foundRow.ADDR + "\n" +
-    "City: " + city + "   ZIP: " + zip + "\n" +
-    "CALCARES: " + acresVal + " acres\n" +
-    "Approx Lawn SqFt: " + Math.round(lawnSqFt) + "\n" +
-    "Estimated Mowing Cost: $" + price.toFixed(2);
-
-  resultEl.innerText = output;
+  resultEl.innerText = `Estimated Mowing Cost: $${price.toFixed(2)}`;
 }
 </script>
 

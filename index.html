@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Summit County Parcel Lookup (Lawn Mowing Only)</title>
+  <meta charset="UTF-8" />
+  <title>Summit County Lawn Mowing Estimate</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -13,17 +13,22 @@
     #status, #result {
       font-weight: bold;
       margin: 10px 0;
+      white-space: pre-line; /* allows \n newlines */
     }
-    input, button, select {
+    input, button {
       padding: 10px;
       margin: 10px;
       width: 80%;
       max-width: 300px;
     }
     .services {
-      margin: 20px 0;
+      margin-top: 20px;
+      text-align: left;
+      display: inline-block;
+      padding-left: 20px;
     }
   </style>
+
   <!-- Include Papa Parse from a CDN -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 </head>
@@ -34,23 +39,25 @@
 
 <!-- Address Input -->
 <label for="userAddress">Enter Address (Exact Match):</label><br>
-<input type="text" id="userAddress" placeholder="e.g. 123 MAIN ST">
+<input type="text" id="userAddress" placeholder="e.g. 1723 WESTPORT COVE">
 <br>
 <button onclick="lookupParcel()">Get Lawn Mowing Estimate</button>
 
 <p id="result"></p>
 
+<!-- Other Services Section -->
 <div class="services">
-  <h3>Interested in Other Services?</h3>
-  <p>Please <strong>inquire</strong> with us for custom pricing on:</p>
-  <ul style="text-align: left; display: inline-block;">
+  <h3>Other Services</h3>
+  <p>Please <strong>inquire</strong> about pricing for:</p>
+  <ul>
     <li>Tree Trimming</li>
     <li>Shrub Trimming</li>
     <li>Mulching</li>
-    <li>Weeding & Flower Bed Maintenance</li>
+    <li>Weeding &amp; Flower Bed Maintenance</li>
     <li>Gravel / Driveway Work</li>
-    <li>Gutter Cleaning & Roof Debris Removal</li>
-    <li>Aeration and More!</li>
+    <li>Gutter Cleaning &amp; Roof Debris Removal</li>
+    <li>Aeration</li>
+    <!-- etc. -->
   </ul>
 </div>
 
@@ -58,7 +65,7 @@
 let parcelsData = [];
 
 // 1) Load CSV using Papa Parse
-Papa.parse("summit-county-ohio-parcels.csv", {
+Papa.parse("summit-county-ohio-parcels - summit-county-ohio-parcels.csv", {
   download: true,
   header: true,       // first row is column headers
   skipEmptyLines: true,
@@ -71,28 +78,32 @@ Papa.parse("summit-county-ohio-parcels.csv", {
     }
     parcelsData = results.data;
     document.getElementById("status").innerText = 
-      "CSV data loaded. Enter an address to get an estimate.";
+      "CSV data loaded. Enter an address for a mowing estimate.";
     console.log("CSV loaded. Number of rows:", parcelsData.length);
   }
 });
 
-// 2) Address Lookup -> Mowing Estimate
+/**
+ * 2) Address Lookup -> Mowing Estimate
+ * We'll do a simple exact match on ADDR (uppercase).
+ */
 function lookupParcel() {
   const addressInput = document.getElementById("userAddress").value.trim().toUpperCase();
   const resultEl = document.getElementById("result");
   resultEl.innerText = "";
 
+  // If CSV isn't loaded yet
   if (!parcelsData.length) {
     resultEl.innerText = "CSV data not loaded yet. Please wait.";
     return;
   }
+  // If user didn't type anything
   if (!addressInput) {
     resultEl.innerText = "Please enter an address.";
     return;
   }
 
-  // We'll do a simple exact match on the CSV's address column, named "ADDR" in this example.
-  // Adjust to match your actual column name. Convert to uppercase for consistent matching.
+  // 3) Search for matching row
   let foundRow = null;
   for (let i = 0; i < parcelsData.length; i++) {
     const rowAddr = (parcelsData[i].ADDR || "").toUpperCase().trim();
@@ -102,12 +113,13 @@ function lookupParcel() {
     }
   }
 
+  // If not found
   if (!foundRow) {
-    resultEl.innerText = "No exact match found for that address. Please check spelling.";
+    resultEl.innerText = "No exact match found for that address. Please check your spelling.";
     return;
   }
 
-  // 3) Convert CALCARES to sq ft
+  // 4) Convert CALCARES to sq ft
   const acresStr = foundRow.CALCARES || "0";
   const acresVal = parseFloat(acresStr);
   if (!acresVal) {
@@ -116,17 +128,22 @@ function lookupParcel() {
   }
   const lawnSqFt = acresVal * 43560;
 
-  // 4) Estimate cost for LAWN MOWING ONLY
-  // Example formula: Price = max($25, 0.02 * lawnSqFt), or use any other logic you prefer
+  // 5) Simple cost formula for lawn mowing
+  // E.g. Price = max($25, 0.02 * lawnSqFt)
   const price = Math.max(25, 0.02 * lawnSqFt);
 
-  // 5) Display result
-  resultEl.innerText = `
-    Found Address: ${foundRow.ADDR}
-    (CALCARES = ${acresVal})
-    Lawn SqFt ~ ${Math.round(lawnSqFt)}
-    Estimated Mowing Cost: $${price.toFixed(2)}
-  `;
+  // 6) Display results (including city, zip)
+  const city = foundRow.CITYNAME || "Unknown city";
+  const zip = foundRow.OWNZIP1 || "Unknown ZIP";
+
+  const output = 
+    "Address: " + foundRow.ADDR + "\n" +
+    "City: " + city + "   ZIP: " + zip + "\n" +
+    "CALCARES: " + acresVal + " acres\n" +
+    "Approx Lawn SqFt: " + Math.round(lawnSqFt) + "\n" +
+    "Estimated Mowing Cost: $" + price.toFixed(2);
+
+  resultEl.innerText = output;
 }
 </script>
 

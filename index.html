@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Lawn Care Estimate with Koordinates</title>
+  <title>Lawn Care Estimate (Subtract Building SF)</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -16,7 +16,7 @@
       width: 70%;
       max-width: 300px;
     }
-    #result, #status {
+    #status, #result {
       font-weight: bold;
       margin-top: 20px;
     }
@@ -24,52 +24,37 @@
 </head>
 <body>
 
-<h2>Lawn Care Estimate (Koordinates API)</h2>
+<h2>Lawn Care Estimate (Subtract House Square Footage)</h2>
 
 <!-- Address Input -->
 <label for="userAddress">Enter Address:</label><br>
 <input type="text" id="userAddress" placeholder="123 Main St, Cleveland OH">
-
-<!-- Button to fetch area -->
-<button onclick="fetchArea()">Get Parcel Size</button>
+<button onclick="fetchArea()">Get Lawn Size</button>
 
 <p id="status"></p>
-
-<!-- Show the retrieved area -->
 <p id="lawnSizeResult"></p>
 
 <!-- Service Dropdown -->
 <select id="services">
   <option value="">-- Select a Service --</option>
   <option value="mowing">Lawn Mowing & Maintenance (Starting at $20)</option>
-  <option value="trimming">Tree Trimming & Removal</option>
-  <option value="shrubs">Bush & Shrub Trimming (Starting at $20)</option>
-  <option value="mulching">Mulching ($70 per cubic yard)</option>
-  <option value="weeding">Weeding & Flower Bed Maintenance ($50 per bed)</option>
-  <option value="gravel">Gravel Installation & Driveway Work</option>
-  <option value="gutter">Gutter Cleaning & Roof Debris Removal</option>
-  <option value="aeration">Seasonal Aeration Services</option>
+  <!-- Add other services if needed -->
 </select>
 
-<!-- Additional inputs for some services -->
-<div id="extraInputs"></div>
-
-<!-- Button to calculate final cost -->
 <button onclick="calculateCost()">Calculate Cost</button>
-
-<!-- Output the final estimate -->
 <p id="result"></p>
 
 <script>
-  const KOORDINATES_API_KEY = "163f48017db14538920925fb3222a182"; // Exposed for DEMO ONLY
+  const KOORDINATES_API_KEY = "YOUR_KOORDINATES_API_KEY"; // Demo only, keep secret in production
   const KOORDINATES_LAYER = "99099";
 
-  let cachedSqFt = 0; // We'll store the parcel size in sq ft once we fetch it
+  let cachedLawnSqFt = 0; // Will hold (lot sq ft - building sq ft)
 
   /**
-   * 1) Geocode address (Nominatim) -> lat/lon
-   * 2) Use lat/lon to query Koordinates JSON
-   * 3) Extract the parcel area (acres or shape area), convert to sq ft
+   * 1) Geocode the user’s address (via OpenStreetMap)
+   * 2) Query Koordinates for the parcel
+   * 3) Subtract building sq ft from total lot area
+   * 4) Store the result in cachedLawnSqFt
    */
   async function fetchArea() {
     const address = document.getElementById("userAddress").value.trim();
@@ -77,7 +62,7 @@
     const sizeEl = document.getElementById("lawnSizeResult");
     statusEl.innerText = "";
     sizeEl.innerText = "";
-    cachedSqFt = 0;
+    cachedLawnSqFt = 0;
 
     if (!address) {
       statusEl.innerText = "Please enter a valid address.";
@@ -87,7 +72,7 @@
     statusEl.innerText = "Geocoding address ...";
 
     try {
-      // 1) Geocode with Nominatim
+      // Geocode with Nominatim
       const geoRes = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`
       );
@@ -96,22 +81,17 @@
         throw new Error("Address not found via Nominatim.");
       }
 
-      // We'll use the first match
+      // Use the first match
       const lat = parseFloat(geoData[0].lat);
       const lon = parseFloat(geoData[0].lon);
 
       statusEl.innerText = "Address found. Querying Koordinates...";
 
-      // 2) Query Koordinates JSON API
-      const koordUrl = `https://koordinates.com/services/query/v1/vector.json` +
-        `?key=${KOORDINATES_API_KEY}` +
-        `&layer=${KOORDINATES_LAYER}` +
-        `&x=${lon}` + 
-        `&y=${lat}` +
-        `&max_results=3` +
-        `&radius=10000` +
-        `&geometry=true` +
-        `&with_field_names=true`;
+      // Koordinates vector query
+      const koordUrl = `https://koordinates.com/services/query/v1/vector.json?` +
+        `key=${KOORDINATES_API_KEY}&layer=${KOORDINATES_LAYER}` +
+        `&x=${lon}&y=${lat}&max_results=3&radius=10000` +
+        `&geometry=true&with_field_names=true`;
 
       const kRes = await fetch(koordUrl);
       const kData = await kRes.json();
@@ -120,36 +100,32 @@
         throw new Error("No data from Koordinates.");
       }
 
-      // 3) Check features in the layer
-      const layerData = kData.vectorQuery.layers[KOORDINATES_LAYER];
-      if (!layerData || !layerData.features || layerData.features.length === 0) {
+      const layer = kData.vectorQuery.layers[KOORDINATES_LAYER];
+      if (!layer || !layer.features || layer.features.length === 0) {
         throw new Error("No parcel features found near that location.");
       }
 
-      // We'll take the first parcel feature
-      const firstFeature = layerData.features[0];
-      const props = firstFeature.properties;
+      // For simplicity, pick the FIRST feature (you might want to find the best match)
+      const feature = layer.features[0];
+      const props = feature.properties;
 
-      // Koordinates data might store area as ACRES or SHAPE_Area. 
-      // Look for a likely field: ACRES, SHAPE_STArea, etc.
-      // This example tries "ACRES" or fallback to "Shape_Area".
-      let acres = parseFloat(props.ACRES || 0);
-      if (!acres && props.Shape_Area) {
-        // If we only have shape area in sq ft (?), we can use that directly
-        // but let's assume shapeArea is in square feet for demonstration
-        cachedSqFt = parseFloat(props.Shape_Area);
-      } else {
-        // If we have ACRES, convert to sq ft
-        cachedSqFt = acres * 43560; 
-      }
+      // 2 main fields: ACRES (total lot area) and BLDGSF (building sq ft)
+      const acresVal = parseFloat(props.ACRES || 0);  // e.g. 0.4039
+      const buildingSF = parseFloat(props.BLDGSF || 0); // e.g. 510
+      // If field names differ, adjust above.
 
-      // If it's still 0, fallback or show error
-      if (!cachedSqFt) {
-        throw new Error("Could not find area from Koordinates data. Check attribute fields.");
+      // Convert acres to total sq ft
+      const totalLotSqFt = acresVal * 43560;
+      // Subtract building footprint
+      cachedLawnSqFt = totalLotSqFt - buildingSF;
+
+      if (cachedLawnSqFt < 0) {
+        cachedLawnSqFt = 0; // Just in case data is off
       }
 
       statusEl.innerText = "";
-      sizeEl.innerText = `Estimated Lawn Size: ${Math.round(cachedSqFt)} sq ft`;
+      sizeEl.innerText =
+        `Total Lot: ${Math.round(totalLotSqFt)} sq ft — Building: ${buildingSF} sq ft → Lawn: ${Math.round(cachedLawnSqFt)} sq ft`;
     } catch (err) {
       statusEl.innerText = "Error fetching parcel data.";
       console.error(err);
@@ -157,50 +133,16 @@
   }
 
   /**
-   * Show/hide extra input fields depending on the selected service
-   */
-  document.getElementById("services").addEventListener("change", function() {
-    const svc = this.value;
-    const extraDiv = document.getElementById("extraInputs");
-    extraDiv.innerHTML = ""; // clear out old inputs
-
-    if (svc === "trimming") {
-      extraDiv.innerHTML = `
-        <label># of Trees:</label><br>
-        <input type="number" id="numTrees" min="1" value="1">`;
-    } else if (svc === "shrubs") {
-      extraDiv.innerHTML = `
-        <label># of Shrubs:</label><br>
-        <input type="number" id="numShrubs" min="1" value="1">`;
-    } else if (svc === "mulching") {
-      extraDiv.innerHTML = `
-        <label>Mulch Depth (in):</label><br>
-        <input type="number" id="mulchDepth" min="1" value="2">`;
-    } else if (svc === "weeding") {
-      extraDiv.innerHTML = `
-        <label># of Beds:</label><br>
-        <input type="number" id="numBeds" min="1" value="1">`;
-    } else if (svc === "gravel") {
-      extraDiv.innerHTML = `
-        <label>Driveway Area (sq ft):</label><br>
-        <input type="number" id="drivewayArea" min="1" value="500">`;
-    } else if (svc === "gutter") {
-      extraDiv.innerHTML = `
-        <label>Gutter Length (ft):</label><br>
-        <input type="number" id="gutterLength" min="1" value="120">`;
-    }
-    // Mowing and aeration only need lawn size, so no extra inputs
-  });
-
-  /**
-   * Apply your formulas to the cached area & any extra user inputs
+   * Calculate cost using your formulas, focusing on lawn area
    */
   function calculateCost() {
     const resultEl = document.getElementById("result");
-    if (!cachedSqFt) {
+    resultEl.innerText = "";
+    if (!cachedLawnSqFt) {
       resultEl.innerText = "Please fetch a valid lawn size first.";
       return;
     }
+
     const svc = document.getElementById("services").value;
     if (!svc) {
       resultEl.innerText = "Please select a service.";
@@ -208,59 +150,16 @@
     }
 
     let price = 0;
-    const lawnSqFt = cachedSqFt;
 
-    switch (svc) {
-      case "mowing":
-        // Price_mowing = max(20, 0.02 * A)
-        price = Math.max(20, 0.02 * lawnSqFt);
-        break;
-
-      case "trimming":
-        // Price_trimming = T * 200
-        const t = parseInt(document.getElementById("numTrees").value || "1", 10);
-        price = t * 200;
-        break;
-
-      case "shrubs":
-        // Price_shrubs = max(20, S * 20)
-        const s = parseInt(document.getElementById("numShrubs").value || "1", 10);
-        price = Math.max(20, s * 20);
-        break;
-
-      case "mulching":
-        // Price_mulching = ( (A*(D/12))/27 ) * 70
-        const d = parseFloat(document.getElementById("mulchDepth").value || "2");
-        const cubicFeet = lawnSqFt * (d / 12);
-        const cubicYards = cubicFeet / 27;
-        price = cubicYards * 70;
-        break;
-
-      case "weeding":
-        // Price_weeding = B * 50
-        const b = parseInt(document.getElementById("numBeds").value || "1", 10);
-        price = b * 50;
-        break;
-
-      case "gravel":
-        // Price_gravel = max(150, 0.15 * drivewayArea)
-        const da = parseFloat(document.getElementById("drivewayArea").value || "500");
-        price = Math.max(150, da * 0.15);
-        break;
-
-      case "gutter":
-        // Price_gutter = max(50, L * 1)
-        const glen = parseFloat(document.getElementById("gutterLength").value || "120");
-        price = Math.max(50, glen);
-        break;
-
-      case "aeration":
-        // Price_aeration = max(100, 0.03 * A)
-        price = Math.max(100, 0.03 * lawnSqFt);
-        break;
+    if (svc === "mowing") {
+      // Price_mowing = max(20, 0.02 * lawnSqFt)
+      price = Math.max(20, 0.02 * cachedLawnSqFt);
     }
 
-    resultEl.innerText = "Estimated Cost: $" + price.toFixed(2);
+    // ... If you want more services, add them here ...
+    // e.g., aeration, mulching, etc.
+
+    resultEl.innerText = `Estimated Cost: $${price.toFixed(2)}`;
   }
 </script>
 

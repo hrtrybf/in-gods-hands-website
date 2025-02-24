@@ -2,200 +2,131 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Measure Lawn & Calculate Cost</title>
+  <title>Summit County Parcel Lookup (Lawn Mowing Only)</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 650px;
+      max-width: 700px;
       margin: 20px auto;
       text-align: center;
     }
-    .step {
-      margin-bottom: 30px;
-    }
-    iframe {
-      width: 100%;
-      height: 500px; /* Adjust as needed */
-      border: 1px solid #ddd;
+    #status, #result {
+      font-weight: bold;
+      margin: 10px 0;
     }
     input, button, select {
-      padding: 8px;
+      padding: 10px;
       margin: 10px;
-      width: 250px;
-      max-width: 90%;
+      width: 80%;
+      max-width: 300px;
     }
-    #result {
-      font-weight: bold;
-      margin-top: 20px;
+    .services {
+      margin: 20px 0;
     }
   </style>
+  <!-- Include Papa Parse from a CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 </head>
 <body>
 
-<h1>Lawn Care Estimate</h1>
+<h2>Summit County Lawn Mowing Estimate</h2>
+<p id="status">Loading Summit County CSV data...</p>
 
-<!-- Step 1: Embed the measuring tool -->
-<div class="step">
-  <h2>Step 1: Measure Your Lawn</h2>
-  <p>
-    Use the tool below to outline your property and find your total lawn square footage.
-  </p>
-  <iframe src="https://www.measuremylawn.com" title="MeasureMyLawn"></iframe>
-  <p>
-    Once you get the square footage, please enter it in the next step.
-  </p>
-</div>
-
-<!-- Step 2: Enter sq ft and calculate cost -->
-<div class="step">
-  <h2>Step 2: Enter Lawn Square Footage</h2>
-  <input type="number" id="lawnSqFt" placeholder="e.g. 3000">
-  
-  <h3>Select a Service:</h3>
-  <select id="services" onchange="toggleExtraInputs()">
-    <option value="">-- Choose One --</option>
-    <option value="mowing">Lawn Mowing & Maintenance (Starting at $20)</option>
-    <option value="trimming">Tree Trimming & Removal</option>
-    <option value="shrubs">Bush & Shrub Trimming (Starting at $20)</option>
-    <option value="mulching">Mulching ($70 per cubic yard)</option>
-    <option value="weeding">Weeding & Flower Bed Maintenance ($50 per bed)</option>
-    <option value="gravel">Gravel Installation & Driveway Work</option>
-    <option value="gutter">Gutter Cleaning & Roof Debris Removal</option>
-    <option value="aeration">Seasonal Aeration Services</option>
-  </select>
-  
-  <div id="extraInputs"></div>
-
-  <br>
-  <button onclick="calculateEstimate()">Calculate Cost</button>
-</div>
+<!-- Address Input -->
+<label for="userAddress">Enter Address (Exact Match):</label><br>
+<input type="text" id="userAddress" placeholder="e.g. 123 MAIN ST">
+<br>
+<button onclick="lookupParcel()">Get Lawn Mowing Estimate</button>
 
 <p id="result"></p>
 
+<div class="services">
+  <h3>Interested in Other Services?</h3>
+  <p>Please <strong>inquire</strong> with us for custom pricing on:</p>
+  <ul style="text-align: left; display: inline-block;">
+    <li>Tree Trimming</li>
+    <li>Shrub Trimming</li>
+    <li>Mulching</li>
+    <li>Weeding & Flower Bed Maintenance</li>
+    <li>Gravel / Driveway Work</li>
+    <li>Gutter Cleaning & Roof Debris Removal</li>
+    <li>Aeration and More!</li>
+  </ul>
+</div>
+
 <script>
-/**
- * Toggle additional input fields depending on the selected service
- */
-function toggleExtraInputs() {
-  const svc = document.getElementById("services").value;
-  const container = document.getElementById("extraInputs");
-  container.innerHTML = "";
+let parcelsData = [];
 
-  if (svc === "trimming") {
-    // # of trees
-    container.innerHTML = `
-      <label># of Trees:</label><br>
-      <input type="number" id="numTrees" min="1" value="1">
-    `;
-  } else if (svc === "shrubs") {
-    // # of shrubs
-    container.innerHTML = `
-      <label># of Shrubs:</label><br>
-      <input type="number" id="numShrubs" min="1" value="1">
-    `;
-  } else if (svc === "mulching") {
-    // Depth in inches
-    container.innerHTML = `
-      <label>Mulch Depth (in):</label><br>
-      <input type="number" id="mulchDepth" min="1" value="2">
-    `;
-  } else if (svc === "weeding") {
-    // # of beds
-    container.innerHTML = `
-      <label># of Beds:</label><br>
-      <input type="number" id="numBeds" min="1" value="1">
-    `;
-  } else if (svc === "gravel") {
-    // Driveway area
-    container.innerHTML = `
-      <label>Driveway Area (sq ft):</label><br>
-      <input type="number" id="drivewayArea" min="1" value="500">
-    `;
-  } else if (svc === "gutter") {
-    // Gutter length
-    container.innerHTML = `
-      <label>Gutter Length (ft):</label><br>
-      <input type="number" id="gutterLength" min="1" value="120">
-    `;
+// 1) Load CSV using Papa Parse
+Papa.parse("summit-county-ohio-parcels.csv", {
+  download: true,
+  header: true,       // first row is column headers
+  skipEmptyLines: true,
+  complete: function(results) {
+    if (results.errors.length) {
+      document.getElementById("status").innerText =
+        "Error parsing CSV: " + results.errors[0].message;
+      console.error(results.errors);
+      return;
+    }
+    parcelsData = results.data;
+    document.getElementById("status").innerText = 
+      "CSV data loaded. Enter an address to get an estimate.";
+    console.log("CSV loaded. Number of rows:", parcelsData.length);
   }
-  // Mowing & aeration only need the lawn sq ft
-}
+});
 
-/**
- * Apply your cost formulas
- */
-function calculateEstimate() {
-  const sqFtInput = document.getElementById("lawnSqFt");
-  const svc = document.getElementById("services").value;
+// 2) Address Lookup -> Mowing Estimate
+function lookupParcel() {
+  const addressInput = document.getElementById("userAddress").value.trim().toUpperCase();
   const resultEl = document.getElementById("result");
-
   resultEl.innerText = "";
 
-  // 1) Validate user inputs
-  const lawnSqFt = parseFloat(sqFtInput.value || "0");
-  if (!lawnSqFt || lawnSqFt <= 0) {
-    resultEl.innerText = "Please enter a valid lawn size.";
+  if (!parcelsData.length) {
+    resultEl.innerText = "CSV data not loaded yet. Please wait.";
     return;
   }
-  if (!svc) {
-    resultEl.innerText = "Please select a service.";
+  if (!addressInput) {
+    resultEl.innerText = "Please enter an address.";
     return;
   }
 
-  let price = 0;
-
-  // 2) Switch by service
-  switch (svc) {
-    case "mowing":
-      // Price_mowing = max(20, 0.02 * A)
-      price = Math.max(20, 0.02 * lawnSqFt);
+  // We'll do a simple exact match on the CSV's address column, named "ADDR" in this example.
+  // Adjust to match your actual column name. Convert to uppercase for consistent matching.
+  let foundRow = null;
+  for (let i = 0; i < parcelsData.length; i++) {
+    const rowAddr = (parcelsData[i].ADDR || "").toUpperCase().trim();
+    if (rowAddr === addressInput) {
+      foundRow = parcelsData[i];
       break;
-
-    case "trimming":
-      // Price_trimming = #Trees * 200
-      const trees = parseInt(document.getElementById("numTrees").value || "1", 10);
-      price = trees * 200;
-      break;
-
-    case "shrubs":
-      // Price_shrubs = max(20, S*20)
-      const shrubs = parseInt(document.getElementById("numShrubs").value || "1", 10);
-      price = Math.max(20, shrubs * 20);
-      break;
-
-    case "mulching":
-      // Price_mulching = (A*(D/12))/27 * 70
-      const depth = parseFloat(document.getElementById("mulchDepth").value || "2");
-      const cubicFeet = lawnSqFt * (depth / 12);
-      const cubicYards = cubicFeet / 27;
-      price = cubicYards * 70;
-      break;
-
-    case "weeding":
-      // Price_weeding = B * 50
-      const beds = parseInt(document.getElementById("numBeds").value || "1", 10);
-      price = beds * 50;
-      break;
-
-    case "gravel":
-      // Price_gravel = max(150, 0.15 * drivewayArea)
-      const drivewayArea = parseFloat(document.getElementById("drivewayArea").value || "500");
-      price = Math.max(150, drivewayArea * 0.15);
-      break;
-
-    case "gutter":
-      // Price_gutter = max(50, L)
-      const gutterLength = parseFloat(document.getElementById("gutterLength").value || "120");
-      price = Math.max(50, gutterLength);
-      break;
-
-    case "aeration":
-      // Price_aeration = max(100, 0.03 * A)
-      price = Math.max(100, 0.03 * lawnSqFt);
-      break;
+    }
   }
 
-  resultEl.innerText = `Estimated Cost: $${price.toFixed(2)}`;
+  if (!foundRow) {
+    resultEl.innerText = "No exact match found for that address. Please check spelling.";
+    return;
+  }
+
+  // 3) Convert CALCARES to sq ft
+  const acresStr = foundRow.CALCARES || "0";
+  const acresVal = parseFloat(acresStr);
+  if (!acresVal) {
+    resultEl.innerText = `Found parcel, but CALCARES is invalid or zero for this address.`;
+    return;
+  }
+  const lawnSqFt = acresVal * 43560;
+
+  // 4) Estimate cost for LAWN MOWING ONLY
+  // Example formula: Price = max($25, 0.02 * lawnSqFt), or use any other logic you prefer
+  const price = Math.max(25, 0.02 * lawnSqFt);
+
+  // 5) Display result
+  resultEl.innerText = `
+    Found Address: ${foundRow.ADDR}
+    (CALCARES = ${acresVal})
+    Lawn SqFt ~ ${Math.round(lawnSqFt)}
+    Estimated Mowing Cost: $${price.toFixed(2)}
+  `;
 }
 </script>
 

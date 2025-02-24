@@ -2,7 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>In God's Hands Lawn &amp; Tree Service + Mowing Calculator</title>
+  <title>In God's Hands Lawn & Tree Service + Mowing Calculator</title>
+
+  <!-- FAVICON: using a tree emoji PNG as an example -->
+  <link rel="icon" 
+        href="https://em-content.zobj.net/thumbs/120/apple/354/evergreen-tree_1f332.png" 
+        type="image/png">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -42,28 +47,19 @@
       color: #333333;
       line-height: 1.6;
     }
-
     h1, h2, h3, h4, h5, h6 {
       font-family: 'Cinzel', 'Lora', serif; /* Heading fonts */
       color: #1E3A8A;
     }
-
     a {
       text-decoration: none;
       color: inherit;
     }
 
-    /* CONTAINER */
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem;
-    }
-
     /* HEADER */
     header {
       background-color: #1E3A8A;
-      padding: 1rem 0;
+      padding: 1rem 1rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -72,22 +68,25 @@
       display: flex;
       align-items: center;
       gap: 1rem;
-      margin-left: 1rem;
     }
     .logo-area img {
       max-width: 60px;
       height: auto;
     }
-    .logo-area .site-title {
+    .site-title {
       font-size: 1.5rem;
       font-weight: bold;
       color: #fff;
+    }
+
+    /* NAVBAR */
+    nav {
+      position: relative;
     }
     nav ul {
       list-style: none;
       display: flex;
       gap: 1rem;
-      margin-right: 1rem;
     }
     nav li a {
       color: #fff;
@@ -98,16 +97,40 @@
       color: #C0C0C0;
     }
 
-    /* HERO SECTION (Simplified) */
+    /* HAMBURGER MENU (Mobile) */
+    .menu-icon {
+      display: none; /* shown on mobile only */
+      font-size: 1.5rem;
+      color: #fff;
+      cursor: pointer;
+    }
+    @media (max-width: 768px) {
+      .menu-icon {
+        display: block;
+      }
+      nav ul {
+        display: none; /* hidden by default on mobile */
+        flex-direction: column;
+        background-color: #1E3A8A;
+        position: absolute;
+        top: 60px; /* below header */
+        right: 0;
+        padding: 1rem;
+        gap: 1rem;
+      }
+      nav ul.showMenu {
+        display: flex; /* toggle class to show */
+      }
+    }
+
+    /* HERO SECTION with simpler approach */
     .hero {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       text-align: center;
       color: #1E3A8A;
       padding: 2rem 1rem;
-      background-color: #F5F5DC; /* or keep the same background */
     }
     .hero img.hero-image {
       max-width: 90%;
@@ -136,7 +159,7 @@
       background-color: #0e2450;
     }
 
-    /* SECTIONS */
+    /* Sections */
     section {
       padding: 2rem 1rem;
     }
@@ -166,7 +189,7 @@
       gap: 0.5rem;
     }
     .services-list i {
-      color: #4CAF50; /* Accent color for icons */
+      color: #4CAF50; /* Accent color */
       margin-top: 2px; 
     }
 
@@ -207,60 +230,19 @@
       color: #1E3A8A;
     }
 
-    /* FOOTER */
-    footer {
-      background-color: #1E3A8A;
-      color: #fff;
-      text-align: center;
-      padding: 1rem;
+    /* CONTACT SECTION */
+    .contact-info p {
+      margin: 0.5rem 0;
+      font-weight: 500;
     }
-
-    /* RESPONSIVE (Mobile) */
-    @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-      nav ul {
-        flex-direction: column;
-      }
-      .hero h1 {
-        font-size: 1.8rem;
-      }
-      .hero p {
-        font-size: 1.1rem;
-      }
+    .contact-info a {
+      color: #1E3A8A;
+      text-decoration: underline;
     }
-
-    /* MOWING COST CALCULATOR Section */
-    .mowing-calculator {
-      max-width: 600px;
-      margin: 0 auto;
-      text-align: center;
+    .tagline {
+      margin-top: 1rem;
+      font-style: italic;
     }
-    .mowing-calculator iframe {
-      width: 100%;
-      height: 350px;
-      border: 1px solid #ccc;
-      margin: 10px 0;
-    }
-    .mowing-calculator input,
-    .mowing-calculator button {
-      margin: 8px;
-      padding: 10px;
-      width: 80%;
-      max-width: 300px;
-    }
-    #calcResult {
-      font-weight: bold;
-      margin-top: 20px;
-      white-space: pre-line; /* multiline */
-    }
-    @media (max-width: 600px) {
-      .mowing-calculator iframe { height: 300px; }
-    }
-
-    /* CONTACT FORM */
     .contact-form {
       max-width: 600px;
       margin: 1rem auto;
@@ -295,248 +277,289 @@
       background-color: #0e2450;
     }
 
+    /* MOWING COST CALCULATOR Section */
+    .mowing-calculator {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .mowing-calculator iframe {
+      width: 100%;
+      height: 350px;
+      border: 1px solid #ccc;
+      margin: 10px 0;
+    }
+    .mowing-calculator input,
+    .mowing-calculator button {
+      margin: 8px;
+      padding: 10px;
+      width: 80%;
+      max-width: 300px;
+    }
+    #calcResult {
+      font-weight: bold;
+      margin-top: 20px;
+      white-space: pre-line; /* multiline */
+    }
+    @media (max-width: 600px) {
+      .mowing-calculator iframe { height: 300px; }
+    }
+
+    /* FOOTER */
+    footer {
+      background-color: #1E3A8A;
+      color: #fff;
+      text-align: center;
+      padding: 1rem;
+    }
+
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <div class="logo-area">
-      <img 
-        src="https://github.com/hrtrybf/in-gods-hands-website/blob/e4a6038db983adeb5f6f2e2d9ba2ccceb2bdd17e/logo.png?raw=true" 
-        alt="In God's Hands Lawn & Tree Service Logo">
-      <div class="site-title">In God’s Hands, LLC</div>
-    </div>
-    <nav>
-      <ul>
-        <li><a href="#hero">Home</a></li>
-        <li><a href="#getintouch">Get In Touch</a></li>
-        <li><a href="#about">About Us</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#why-choose">Why Choose Us</a></li>
-        <li><a href="#testimonials">Testimonials</a></li>
-      </ul>
-    </nav>
-  </header>
-
-  <!-- HERO SECTION (Simplified, with new image) -->
-  <section id="hero" class="hero">
-    <!-- The new image replaces the old background approach -->
+<!-- HEADER -->
+<header>
+  <div class="logo-area">
     <img 
-      class="hero-image" 
-      src="https://github.com/hrtrybf/in-gods-hands-website/blob/5c005ae0b604f4b2068965f018aa686e9e488e7d/logo.png?raw=true" 
-      alt="In God's Hands Logo Banner">
-    <h1>In God’s Hands Lawn &amp; Tree Service</h1>
-    <p>Quality. Integrity. Dependability.</p>
-    <button class="btn-primary" onclick="document.getElementById('getintouch').scrollIntoView({behavior:'smooth'})">
-      Get a Quote
-    </button>
-  </section>
+      src="https://github.com/hrtrybf/in-gods-hands-website/blob/e4a6038db983adeb5f6f2e2d9ba2ccceb2bdd17e/logo.png?raw=true" 
+      alt="In God's Hands Lawn & Tree Service Logo">
+    <div class="site-title">In God’s Hands, LLC</div>
+  </div>
 
-  <!-- CONTACT (Get In Touch) SECTION - immediately below hero -->
-  <section id="getintouch">
-    <div class="container">
-      <div class="section-content">
-        <h2>Get In Touch!</h2>
-        <p style="margin-bottom: 1rem;">
-          Please fill out the form below to send us a message. We'll get back to you soon!
+  <nav>
+    <i class="fas fa-bars menu-icon" onclick="toggleMenu()"></i> <!-- hamburger icon -->
+    <ul id="navLinks">
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#about">About Us</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#why-choose">Why Choose Us</a></li>
+      <li><a href="#testimonials">Testimonials</a></li>
+      <li><a href="#contact">Get In Touch</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- HERO SECTION -->
+<section id="hero" class="hero">
+  <img 
+    class="hero-image" 
+    src="https://github.com/hrtrybf/in-gods-hands-website/blob/5c005ae0b604f4b2068965f018aa686e9e488e7d/logo.png?raw=true" 
+    alt="In God's Hands Logo Banner">
+  <h1>In God’s Hands Lawn &amp; Tree Service</h1>
+  <p>Quality. Integrity. Dependability.</p>
+  <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+    Get a Quote
+  </button>
+</section>
+
+<!-- ABOUT US SECTION -->
+<section id="about">
+  <div class="container">
+    <div class="section-content">
+      <h2>About Us</h2>
+      <p>
+        At In God’s Hands Lawn &amp; Tree Service, we take pride in providing 
+        high-quality lawn care, landscaping, and tree services tailored to meet your needs. 
+        We are a locally owned and operated company, committed to delivering professional 
+        and reliable services to homeowners and businesses. Whether you need routine 
+        maintenance or a major outdoor transformation, we’re here to help!
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES SECTION -->
+<section id="services">
+  <div class="container">
+    <div class="section-content">
+      <h2>Our Services</h2>
+      <ul class="services-list">
+        <li><i class="fas fa-check-circle"></i> Lawn Mowing &amp; Maintenance (Starting at $20)</li>
+        <li><i class="fas fa-tree"></i> Tree Trimming &amp; Removal</li>
+        <li><i class="fas fa-seedling"></i> Bush &amp; Shrub Trimming (Starting at $20)</li>
+        <li><i class="fas fa-hand-holding-seedling"></i> Mulching (Starting at $70 per yard)</li>
+        <li><i class="fas fa-leaf"></i> Weeding &amp; Flower Bed Maintenance ($50 per bed)</li>
+        <li><i class="fas fa-truck-pickup"></i> Gravel Installation &amp; Driveway Work</li>
+        <li><i class="fas fa-water"></i> Gutter Cleaning &amp; Roof Debris Removal</li>
+        <li><i class="fas fa-sync-alt"></i> Seasonal Aeration Services</li>
+      </ul>
+      <p class="services-pricing" style="margin-top:1rem; font-style:italic;">
+        We price small jobs by the hour and larger projects as a whole to ensure fair and transparent pricing.
+        We also offer discounts for senior citizens and military personnel.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- WHY CHOOSE US SECTION -->
+<section id="why-choose">
+  <div class="container">
+    <div class="section-content">
+      <h2>Why Choose Us?</h2>
+      <ul class="why-choose-list">
+        <li><i class="fas fa-user-check"></i> Experienced &amp; Professional Service</li>
+        <li><i class="fas fa-dollar-sign"></i> Affordable Pricing &amp; Upfront Estimates</li>
+        <li><i class="fas fa-thumbs-up"></i> Customer Satisfaction is Our Priority</li>
+        <li><i class="fas fa-shield-alt"></i> Fully Insured for Your Peace of Mind</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS SECTION -->
+<section id="testimonials">
+  <div class="container">
+    <div class="section-content">
+      <h2>Customer Testimonials</h2>
+
+      <div class="testimonial">
+        <p>
+          “Mahalon and his team did an amazing job on my property. Professional, friendly,
+          and hardworking—highly recommend!”
         </p>
-        <form 
-          class="contact-form"
-          action="mailto:ingodshandslawn@outlook.com" 
-          method="POST" 
-          enctype="text/plain"
-        >
-          <label for="name">Name:</label>
-          <input type="text" name="name" id="name" placeholder="Your Name" required>
+        <span>– Dottie A.</span>
+      </div>
 
-          <label for="email">Email:</label>
-          <input type="email" name="email" id="email" placeholder="Your Email" required>
+      <div class="testimonial">
+        <p>
+          “They cleaned up my flower beds and trimmed my trees beautifully. 
+          Great work at a fair price!”
+        </p>
+        <span>– Joseph T.</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-          <label for="message">Message:</label>
-          <textarea name="message" id="message" rows="5" placeholder="Your Message"></textarea>
-
-          <button type="submit">Send</button>
-        </form>
-
-        <p style="margin-top: 1rem;">
-          Or contact us directly by phone/text at <strong>(330) 510-0382</strong><br>
-          Email: <strong><a href="mailto:ingodshandslawn@outlook.com">ingodshandslawn@outlook.com</a></strong><br>
-          Nextdoor: 
+<!-- CONTACT SECTION (Get In Touch) -->
+<section id="contact">
+  <div class="container">
+    <div class="section-content">
+      <h2>Get in Touch!</h2>
+      <div class="contact-info">
+        <p><strong>Serving:</strong> Stow, Hudson, Kent, Macedonia, Boston Heights, and surrounding areas.</p>
+        <p><strong>Call or Text:</strong> (330) 510-0382</p>
+        <p><strong>Email:</strong> 
+          <a href="mailto:InGodsHandsLawn@outlook.com">InGodsHandsLawn@outlook.com</a>
+        </p>
+        <p><strong>Nextdoor:</strong> 
           <a href="https://nextdoor.com/pages/in-gods-hands-lawn-care-tree-service-stow-oh/" target="_blank">
             In God’s Hands Lawn &amp; Tree Service
-          </a>
+          </a><br>
+          Message me on Nextdoor or email me for contact!
         </p>
+        <p class="tagline">Let us take care of your lawn &amp; trees—because when it’s in God’s hands, it’s done right!</p>
       </div>
+
+      <!-- Contact form instructions -->
+      <p style="margin-top: 1.5rem;">
+        Please fill out the form below to send us a message. We'll get back to you soon!
+      </p>
+      <form 
+        class="contact-form"
+        action="mailto:ingodshandslawn@outlook.com" 
+        method="POST" 
+        enctype="text/plain"
+      >
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" placeholder="Your Name" required>
+
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" placeholder="Your Email" required>
+
+        <label for="message">Message:</label>
+        <textarea name="message" id="message" rows="5" placeholder="Your Message"></textarea>
+
+        <button type="submit">Send</button>
+      </form>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ABOUT US SECTION -->
-  <section id="about">
-    <div class="container">
-      <div class="section-content">
-        <h2>About Us</h2>
-        <p>
-          At In God’s Hands Lawn &amp; Tree Service, we take pride in providing 
-          high-quality lawn care, landscaping, and tree services tailored to meet your needs. 
-          We are a locally owned and operated company, committed to delivering professional 
-          and reliable services to homeowners and businesses. Whether you need routine 
-          maintenance or a major outdoor transformation, we’re here to help!
-        </p>
-      </div>
+<!-- MOWING COST CALCULATOR SECTION -->
+<section id="mowing-calc">
+  <div class="container mowing-calculator">
+    <div class="section-content">
+      <h2>Lawn Mowing Cost Calculator</h2>
+      <p>
+        Don’t know your lawn’s square footage? Use the measure tool below.
+        If it doesn’t load, 
+        <a href="https://www.measuremylawn.com" target="_blank">open it in a new tab</a>.
+      </p>
+      <iframe src="https://www.measuremylawn.com" title="MeasureMyLawn"></iframe>
+
+      <h3>Enter Lawn Square Footage</h3>
+      <input type="number" id="lawnSqFt" placeholder="e.g. 21780 (≈ 1/2 acre)">
+      <br>
+      <button onclick="calculateEstimate()">Calculate</button>
+
+      <p id="calcResult"></p>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- SERVICES SECTION -->
-  <section id="services">
-    <div class="container">
-      <div class="section-content">
-        <h2>Our Services</h2>
-        <ul class="services-list">
-          <li><i class="fas fa-check-circle"></i> Lawn Mowing &amp; Maintenance (Starting at $20)</li>
-          <li><i class="fas fa-tree"></i> Tree Trimming &amp; Removal</li>
-          <li><i class="fas fa-seedling"></i> Bush &amp; Shrub Trimming (Starting at $20)</li>
-          <li><i class="fas fa-hand-holding-seedling"></i> Mulching (Starting at $70 per yard)</li>
-          <li><i class="fas fa-leaf"></i> Weeding &amp; Flower Bed Maintenance ($50 per bed)</li>
-          <li><i class="fas fa-truck-pickup"></i> Gravel Installation &amp; Driveway Work</li>
-          <li><i class="fas fa-water"></i> Gutter Cleaning &amp; Roof Debris Removal</li>
-          <li><i class="fas fa-sync-alt"></i> Seasonal Aeration Services</li>
-        </ul>
-        <p class="services-pricing" style="margin-top:1rem; font-style:italic;">
-          We price small jobs by the hour and larger projects as a whole to ensure fair and transparent pricing.
-          We also offer discounts for senior citizens and military personnel.
-        </p>
-      </div>
-    </div>
-  </section>
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 In God’s Hands, LLC. All rights reserved.</p>
+</footer>
 
-  <!-- WHY CHOOSE US SECTION -->
-  <section id="why-choose">
-    <div class="container">
-      <div class="section-content">
-        <h2>Why Choose Us?</h2>
-        <ul class="why-choose-list">
-          <li><i class="fas fa-user-check"></i> Experienced &amp; Professional Service</li>
-          <li><i class="fas fa-dollar-sign"></i> Affordable Pricing &amp; Upfront Estimates</li>
-          <li><i class="fas fa-thumbs-up"></i> Customer Satisfaction is Our Priority</li>
-          <li><i class="fas fa-shield-alt"></i> Fully Insured for Your Peace of Mind</li>
-        </ul>
-      </div>
-    </div>
-  </section>
+<!-- JS for Calc + Mobile Menu -->
+<script>
+function calculateEstimate() {
+  const resultEl = document.getElementById("calcResult");
+  const sqFtVal = parseFloat(document.getElementById("lawnSqFt").value || "0");
+  resultEl.innerText = "";
 
-  <!-- TESTIMONIALS SECTION -->
-  <section id="testimonials">
-    <div class="container">
-      <div class="section-content">
-        <h2>Customer Testimonials</h2>
-
-        <div class="testimonial">
-          <p>
-            “Mahalon and his team did an amazing job on my property. Professional, friendly,
-            and hardworking—highly recommend!”
-          </p>
-          <span>– Dottie A.</span>
-        </div>
-
-        <div class="testimonial">
-          <p>
-            “They cleaned up my flower beds and trimmed my trees beautifully. 
-            Great work at a fair price!”
-          </p>
-          <span>– Joseph T.</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- MOWING COST CALCULATOR SECTION -->
-  <section id="mowing-calc">
-    <div class="container mowing-calculator">
-      <div class="section-content">
-        <h2>Lawn Mowing Cost Calculator</h2>
-        <p>
-          Don’t know your lawn’s square footage? Use the measure tool below.
-          If it doesn’t load, 
-          <a href="https://www.measuremylawn.com" target="_blank">open it in a new tab</a>.
-        </p>
-        <iframe src="https://www.measuremylawn.com" title="MeasureMyLawn"></iframe>
-
-        <h3>Enter Lawn Square Footage</h3>
-        <input type="number" id="lawnSqFt" placeholder="e.g. 21780 (≈ 1/2 acre)">
-        <br>
-        <button onclick="calculateEstimate()">Calculate</button>
-
-        <p id="calcResult"></p>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <p>© 2025 In God’s Hands, LLC. All rights reserved.</p>
-  </footer>
-
-  <!-- CALCULATOR SCRIPT -->
-  <script>
-  function calculateEstimate() {
-    const resultEl = document.getElementById("calcResult");
-    const sqFtVal = parseFloat(document.getElementById("lawnSqFt").value || "0");
-    resultEl.innerText = "";
-
-    if (sqFtVal <= 0) {
-      resultEl.innerText = "Please enter a valid lawn size in square feet.";
-      return;
-    }
-
-    // Convert sq ft to acres
-    const acres = sqFtVal / 43560;
-
-    // Piecewise logic:
-    // 1/4 acre => 15–30 min., $20–$40
-    // 1/2 acre => 30–60 min., $40–$70
-    // 1 acre => 1–2 hrs., $100–$150
-    // 2 acres => 2–4 hrs., $150–$200
-    // 3 acres => 3–6 hrs., $200–$500
-    // 5 acres => 5–10 hrs., $500–$650
-    // 10 acres => 10–100 hrs., $500–$750
-    // Over 10 => contact
-    let timeRange = "";
-    let costRange = "";
-
-    if (acres <= 0.25) {
-      timeRange = "15 – 30 min.";
-      costRange = "$20 – $40";
-    } else if (acres <= 0.5) {
-      timeRange = "30 min. – 1 hr.";
-      costRange = "$40 – $70";
-    } else if (acres <= 1.0) {
-      timeRange = "1 – 2 hrs.";
-      costRange = "$100 – $150";
-    } else if (acres <= 2.0) {
-      timeRange = "2 – 4 hrs.";
-      costRange = "$150 – $200";
-    } else if (acres <= 3.0) {
-      timeRange = "3 – 6 hrs.";
-      costRange = "$200 – $500";
-    } else if (acres <= 5.0) {
-      timeRange = "5 – 10 hrs.";
-      costRange = "$500 – $650";
-    } else if (acres <= 10.0) {
-      timeRange = "10 – 100 hrs.";
-      costRange = "$500 – $750";
-    } else {
-      timeRange = "More than 10 acres";
-      costRange = "Please contact us for a quote";
-    }
-
-    const output = 
-      `Lawn Size: ~${acres.toFixed(2)} acre(s)\n` +
-      `Estimated Time: ${timeRange}\n` +
-      `Estimated Cost: ${costRange}`;
-    resultEl.innerText = output;
+  if (sqFtVal <= 0) {
+    resultEl.innerText = "Please enter a valid lawn size in square feet.";
+    return;
   }
-  </script>
+
+  // Convert sq ft to acres
+  const acres = sqFtVal / 43560;
+
+  let timeRange = "";
+  let costRange = "";
+
+  if (acres <= 0.25) {
+    timeRange = "15 – 30 min.";
+    costRange = "$20 – $40";
+  } else if (acres <= 0.5) {
+    timeRange = "30 min. – 1 hr.";
+    costRange = "$40 – $70";
+  } else if (acres <= 1.0) {
+    timeRange = "1 – 2 hrs.";
+    costRange = "$100 – $150";
+  } else if (acres <= 2.0) {
+    timeRange = "2 – 4 hrs.";
+    costRange = "$150 – $200";
+  } else if (acres <= 3.0) {
+    timeRange = "3 – 6 hrs.";
+    costRange = "$200 – $500";
+  } else if (acres <= 5.0) {
+    timeRange = "5 – 10 hrs.";
+    costRange = "$500 – $650";
+  } else if (acres <= 10.0) {
+    timeRange = "10 – 100 hrs.";
+    costRange = "$500 – $750";
+  } else {
+    timeRange = "More than 10 acres";
+    costRange = "Please contact us for a quote";
+  }
+
+  const output = 
+    `Lawn Size: ~${acres.toFixed(2)} acre(s)\n` +
+    `Estimated Time: ${timeRange}\n` +
+    `Estimated Cost: ${costRange}`;
+  resultEl.innerText = output;
+}
+
+// Mobile hamburger toggle
+function toggleMenu() {
+  const navLinks = document.getElementById("navLinks");
+  navLinks.classList.toggle("showMenu");
+}
+</script>
 
 </body>
 </html>

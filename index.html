@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>In God's Hands Lawn & Tree Service + Mowing Calculator</title>
+  <title>In God's Hands Lawn &amp; Tree Service + Mowing Calculator</title>
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -98,31 +98,32 @@
       color: #C0C0C0;
     }
 
-    /* HERO SECTION */
+    /* HERO SECTION (Simplified) */
     .hero {
-      background: url('https://via.placeholder.com/1600x800/1E3A8A/FFFFFF?text=In+God%27s+Hands+Lawn+%26+Tree+Service') 
-                  no-repeat center center/cover;
-      min-height: 60vh;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       text-align: center;
-      color: #fff;
+      color: #1E3A8A;
       padding: 2rem 1rem;
+      background-color: #F5F5DC; /* or keep the same background */
     }
-    .hero-content {
-      max-width: 800px;
-    }
-    .hero-content h1 {
-      font-size: 2.5rem;
+    .hero img.hero-image {
+      max-width: 90%;
+      height: auto;
       margin-bottom: 1rem;
     }
-    .hero-content p {
-      font-size: 1.25rem;
-      margin-bottom: 2rem;
+    .hero h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+    }
+    .hero p {
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
     }
     .btn-primary {
-      background-color: #15306a; /* Slightly darker than #1E3A8A */
+      background-color: #15306a;
       color: #fff;
       padding: 0.75rem 1.5rem;
       border: none;
@@ -206,20 +207,6 @@
       color: #1E3A8A;
     }
 
-    /* CONTACT */
-    .contact-info p {
-      margin: 0.5rem 0;
-      font-weight: 500;
-    }
-    .contact-info a {
-      color: #1E3A8A;
-      text-decoration: underline;
-    }
-    .tagline {
-      margin-top: 1rem;
-      font-style: italic;
-    }
-
     /* FOOTER */
     footer {
       background-color: #1E3A8A;
@@ -237,19 +224,11 @@
       nav ul {
         flex-direction: column;
       }
-      .hero {
-        background-position: center;
-        min-height: 50vh;
-        padding: 4rem 1rem;
+      .hero h1 {
+        font-size: 1.8rem;
       }
-      .hero-content h1 {
-        font-size: 2rem;
-      }
-      .services-list, .why-choose-list {
-        max-width: 100%;
-      }
-      .testimonial {
-        margin: 1rem;
+      .hero p {
+        font-size: 1.1rem;
       }
     }
 
@@ -280,6 +259,42 @@
     @media (max-width: 600px) {
       .mowing-calculator iframe { height: 300px; }
     }
+
+    /* CONTACT FORM */
+    .contact-form {
+      max-width: 600px;
+      margin: 1rem auto;
+      text-align: left;
+    }
+    .contact-form label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 600;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.25rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    .contact-form button {
+      background-color: #15306a;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    .contact-form button:hover {
+      background-color: #0e2450;
+    }
+
   </style>
 </head>
 <body>
@@ -287,7 +302,6 @@
   <!-- HEADER -->
   <header>
     <div class="logo-area">
-      <!-- REPLACED LOGO with your GitHub link -->
       <img 
         src="https://github.com/hrtrybf/in-gods-hands-website/blob/e4a6038db983adeb5f6f2e2d9ba2ccceb2bdd17e/logo.png?raw=true" 
         alt="In God's Hands Lawn & Tree Service Logo">
@@ -296,23 +310,64 @@
     <nav>
       <ul>
         <li><a href="#hero">Home</a></li>
+        <li><a href="#getintouch">Get In Touch</a></li>
         <li><a href="#about">About Us</a></li>
         <li><a href="#services">Services</a></li>
         <li><a href="#why-choose">Why Choose Us</a></li>
         <li><a href="#testimonials">Testimonials</a></li>
-        <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
   </header>
 
-  <!-- HERO SECTION -->
+  <!-- HERO SECTION (Simplified, with new image) -->
   <section id="hero" class="hero">
-    <div class="hero-content">
-      <h1>In God’s Hands Lawn &amp; Tree Service</h1>
-      <p>Quality. Integrity. Dependability.</p>
-      <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
-        Get a Quote
-      </button>
+    <!-- The new image replaces the old background approach -->
+    <img 
+      class="hero-image" 
+      src="https://github.com/hrtrybf/in-gods-hands-website/blob/5c005ae0b604f4b2068965f018aa686e9e488e7d/logo.png?raw=true" 
+      alt="In God's Hands Logo Banner">
+    <h1>In God’s Hands Lawn &amp; Tree Service</h1>
+    <p>Quality. Integrity. Dependability.</p>
+    <button class="btn-primary" onclick="document.getElementById('getintouch').scrollIntoView({behavior:'smooth'})">
+      Get a Quote
+    </button>
+  </section>
+
+  <!-- CONTACT (Get In Touch) SECTION - immediately below hero -->
+  <section id="getintouch">
+    <div class="container">
+      <div class="section-content">
+        <h2>Get In Touch!</h2>
+        <p style="margin-bottom: 1rem;">
+          Please fill out the form below to send us a message. We'll get back to you soon!
+        </p>
+        <form 
+          class="contact-form"
+          action="mailto:ingodshandslawn@outlook.com" 
+          method="POST" 
+          enctype="text/plain"
+        >
+          <label for="name">Name:</label>
+          <input type="text" name="name" id="name" placeholder="Your Name" required>
+
+          <label for="email">Email:</label>
+          <input type="email" name="email" id="email" placeholder="Your Email" required>
+
+          <label for="message">Message:</label>
+          <textarea name="message" id="message" rows="5" placeholder="Your Message"></textarea>
+
+          <button type="submit">Send</button>
+        </form>
+
+        <p style="margin-top: 1rem;">
+          Or contact us directly by phone/text at <strong>(330) 510-0382</strong><br>
+          Email: <strong><a href="mailto:ingodshandslawn@outlook.com">ingodshandslawn@outlook.com</a></strong><br>
+          Nextdoor: 
+          <a href="https://nextdoor.com/pages/in-gods-hands-lawn-care-tree-service-stow-oh/" target="_blank">
+            In God’s Hands Lawn &amp; Tree Service
+          </a>
+        </p>
+      </div>
     </div>
   </section>
 
@@ -395,37 +450,6 @@
     </div>
   </section>
 
-  <!-- CONTACT SECTION -->
-  <section id="contact">
-    <div class="container">
-      <div class="section-content">
-        <h2>Get in Touch!</h2>
-        <div class="contact-info">
-          <p>
-            <strong>Serving:</strong> Stow, Hudson, Kent, Macedonia, Boston Heights, and surrounding areas.
-          </p>
-          <p>
-            <strong>Call or Text:</strong> (330) 510-0382
-          </p>
-          <p>
-            <strong>Email:</strong> 
-            <a href="mailto:InGodsHandsLawn@outlook.com">InGodsHandsLawn@outlook.com</a>
-          </p>
-          <p>
-            <strong>Nextdoor:</strong>
-            <a href="https://nextdoor.com/pages/in-gods-hands-lawn-care-tree-service-stow-oh/" target="_blank">
-              In God’s Hands Lawn &amp; Tree Service
-            </a><br>
-            Message me on Nextdoor or email me for contact!
-          </p>
-          <p class="tagline">
-            Let us take care of your lawn &amp; trees—because when it’s in God’s hands, it’s done right!
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- MOWING COST CALCULATOR SECTION -->
   <section id="mowing-calc">
     <div class="container mowing-calculator">
@@ -468,7 +492,7 @@
     // Convert sq ft to acres
     const acres = sqFtVal / 43560;
 
-    // Your piecewise logic:
+    // Piecewise logic:
     // 1/4 acre => 15–30 min., $20–$40
     // 1/2 acre => 30–60 min., $40–$70
     // 1 acre => 1–2 hrs., $100–$150

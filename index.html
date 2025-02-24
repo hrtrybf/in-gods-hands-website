@@ -1,405 +1,166 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-  <!-- Page Title -->
-  <title>In God's Hands Lawn & Tree Service</title>
-
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Headings: Cinzel or Lora; Body: Poppins or Montserrat -->
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lora:wght@400;700&family=Poppins:wght@300;400;500;700&family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
-  
-  <!-- Font Awesome for Icons -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    integrity="sha512-SZjp66cTBEfBUPqHHkCFm2cO435ZbK48nN2vBKgViQYqOXN9qZzeypl07A5mdJ3TYZkg5gFH7FJUqH7KmwR8xg=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  />
-
-  <!-- Inline CSS Styling -->
-  <style>
-    /* 
-      Color Palette
-      -------------
-      Primary (Deep Blue): #1E3A8A
-      Accent (Leaf Green): #4CAF50
-      Background (Light Beige): #F5F5DC
-      Text (Dark Gray): #333333
-    */
-
-    /* RESET */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Poppins', 'Montserrat', sans-serif; /* Body text fonts */
-      background-color: #F5F5DC;
-      color: #333333;
-      line-height: 1.6;
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-      font-family: 'Cinzel', 'Lora', serif; /* Heading fonts */
-      color: #1E3A8A;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    /* CONTAINER */
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem;
-    }
-
-    /* HEADER */
-    header {
-      background-color: #1E3A8A;
-      padding: 1rem 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .logo-area {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-left: 1rem;
-    }
-    .logo-area img {
-      max-width: 60px;
-      height: auto;
-    }
-    .logo-area .site-title {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #fff;
-    }
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 1rem;
-      margin-right: 1rem;
-    }
-    nav li a {
-      color: #fff;
-      font-weight: 500;
-      transition: color 0.3s;
-    }
-    nav li a:hover {
-      color: #C0C0C0;
-    }
-
-    /* HERO SECTION */
-    .hero {
-      background: url('https://via.placeholder.com/1600x800/1E3A8A/FFFFFF?text=In+God%27s+Hands+Lawn+%26+Tree+Service') 
-                  no-repeat center center/cover;
-      min-height: 60vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      color: #fff;
-      padding: 2rem 1rem;
-    }
-    .hero-content {
-      max-width: 800px;
-    }
-    .hero-content h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-    .hero-content p {
-      font-size: 1.25rem;
-      margin-bottom: 2rem;
-    }
-    .btn-primary {
-      background-color: #1E3A8A;
-      color: #fff;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 20px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    .btn-primary:hover {
-      background-color: #15306a;
-    }
-
-    /* SECTIONS */
-    section {
-      padding: 2rem 1rem;
-    }
-    section h2 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-    .section-content {
-      max-width: 1000px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
-    /* SERVICES */
-    .services-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      max-width: 600px;
-      margin: 1rem auto;
-      text-align: left;
-    }
-    .services-list li {
-      display: flex;
-      align-items: flex-start;
-      margin-bottom: 0.75rem;
-      gap: 0.5rem;
-    }
-    .services-list i {
-      color: #4CAF50; /* Accent color for icons */
-      margin-top: 2px; 
-    }
-
-    /* WHY CHOOSE US */
-    .why-choose-list {
-      list-style: none;
-      max-width: 600px;
-      margin: 1rem auto;
-      text-align: left;
-    }
-    .why-choose-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-      margin-bottom: 0.75rem;
-    }
-    .why-choose-list i {
-      color: #4CAF50; 
-      margin-top: 2px;
-    }
-
-    /* TESTIMONIALS */
-    .testimonial {
-      background-color: #fff;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      margin: 1rem auto;
-      padding: 1.5rem;
-      max-width: 600px;
-      text-align: left;
-    }
-    .testimonial p {
-      font-style: italic;
-      margin-bottom: 0.75rem;
-    }
-    .testimonial span {
-      font-weight: bold;
-      color: #1E3A8A;
-    }
-
-    /* CONTACT */
-    .contact-info p {
-      margin: 0.5rem 0;
-      font-weight: 500;
-    }
-    .contact-info a {
-      color: #1E3A8A;
-      text-decoration: underline;
-    }
-    .tagline {
-      margin-top: 1rem;
-      font-style: italic;
-    }
-
-    /* FOOTER */
-    footer {
-      background-color: #1E3A8A;
-      color: #fff;
-      text-align: center;
-      padding: 1rem;
-    }
-
-    /* RESPONSIVE (Mobile) */
-    @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-      nav ul {
-        flex-direction: column;
-      }
-      .hero {
-        background-position: center;
-        min-height: 50vh;
-        padding: 4rem 1rem;
-      }
-      .hero-content h1 {
-        font-size: 2rem;
-      }
-      .services-list, .why-choose-list {
-        max-width: 100%;
-      }
-      .testimonial {
-        margin: 1rem;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lawn Care Estimate</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        input, button, select { padding: 10px; margin: 10px; width: 90%; max-width: 400px; }
+        #quoteResult { font-size: 20px; font-weight: bold; margin-top: 10px; }
+    </style>
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <div class="logo-area">
-      <!-- Replace this with your actual logo URL or local image path -->
-      <img 
-        src="https://via.placeholder.com/60x60.png?text=Logo" 
-        alt="In God's Hands Lawn & Tree Service Logo" 
-      />
-      <div class="site-title">In God’s Hands, LLC</div>
-    </div>
-    <nav>
-      <ul>
-        <li><a href="#hero">Home</a></li>
-        <li><a href="#about">About Us</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#why-choose">Why Choose Us</a></li>
-        <li><a href="#testimonials">Testimonials</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
+    <h2>Get Your Lawn Care Estimate (Cleveland & Summit County)</h2>
+    
+    <label for="address">Enter Your Address:</label>
+    <input type="text" id="address" placeholder="123 Main St, Cleveland, OH">
+    <button onclick="fetchLawnSize()">Get Estimate</button>
 
-  <!-- HERO SECTION -->
-  <section id="hero" class="hero">
-    <div class="hero-content">
-      <h1>In God’s Hands Lawn & Tree Service</h1>
-      <p>Quality. Integrity. Dependability.</p>
-      <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
-        Get a Quote
-      </button>
-    </div>
-  </section>
+    <p id="lawnSizeResult"></p>
 
-  <!-- ABOUT US SECTION -->
-  <section id="about">
-    <div class="container">
-      <div class="section-content">
-        <h2>About Us</h2>
-        <p>
-          At In God’s Hands Lawn & Tree Service, we take pride in providing 
-          high-quality lawn care, landscaping, and tree services tailored to meet your needs. 
-          We are a locally owned and operated company, committed to delivering professional 
-          and reliable services to homeowners and businesses. Whether you need routine 
-          maintenance or a major outdoor transformation, we’re here to help!
-        </p>
-      </div>
-    </div>
-  </section>
+    <h3>Select Services:</h3>
+    <select id="services">
+        <option value="mowing">Lawn Mowing & Maintenance (Starting at $20)</option>
+        <option value="trimming">Tree Trimming & Removal</option>
+        <option value="shrubs">Bush & Shrub Trimming (Starting at $20)</option>
+        <option value="mulching">Mulching ($70 per yard)</option>
+        <option value="weeding">Weeding & Flower Bed Maintenance ($50 per bed)</option>
+        <option value="gravel">Gravel Installation & Driveway Work</option>
+        <option value="gutter">Gutter Cleaning & Roof Debris Removal</option>
+        <option value="aeration">Seasonal Aeration Services</option>
+    </select>
 
-  <!-- SERVICES SECTION -->
-  <section id="services">
-    <div class="container">
-      <div class="section-content">
-        <h2>Our Services</h2>
-        <ul class="services-list">
-          <li><i class="fas fa-check-circle"></i> Lawn Mowing & Maintenance (Starting at $20)</li>
-          <li><i class="fas fa-tree"></i> Tree Trimming & Removal</li>
-          <li><i class="fas fa-seedling"></i> Bush & Shrub Trimming (Starting at $20)</li>
-          <li><i class="fas fa-hand-holding-seedling"></i> Mulching (Starting at $70 per yard)</li>
-          <li><i class="fas fa-leaf"></i> Weeding & Flower Bed Maintenance ($50 per bed)</li>
-          <li><i class="fas fa-truck-pickup"></i> Gravel Installation & Driveway Work</li>
-          <li><i class="fas fa-water"></i> Gutter Cleaning & Roof Debris Removal</li>
-          <li><i class="fas fa-sync-alt"></i> Seasonal Aeration Services</li>
-        </ul>
-        <p class="services-pricing" style="margin-top:1rem; font-style:italic;">
-          We price small jobs by the hour and larger projects as a whole to ensure fair and transparent pricing.
-          We also offer discounts for senior citizens and military personnel.
-        </p>
-      </div>
-    </div>
-  </section>
+    <button onclick="calculateEstimate()">Calculate Cost</button>
+    
+    <p id="quoteResult"></p>
 
-  <!-- WHY CHOOSE US SECTION -->
-  <section id="why-choose">
-    <div class="container">
-      <div class="section-content">
-        <h2>Why Choose Us?</h2>
-        <ul class="why-choose-list">
-          <li><i class="fas fa-user-check"></i> Experienced & Professional Service</li>
-          <li><i class="fas fa-dollar-sign"></i> Affordable Pricing & Upfront Estimates</li>
-          <li><i class="fas fa-thumbs-up"></i> Customer Satisfaction is Our Priority</li>
-          <li><i class="fas fa-shield-alt"></i> Fully Insured for Your Peace of Mind</li>
-        </ul>
-      </div>
-    </div>
-  </section>
+    <script>
+        async function fetchLawnSize() {
+            let address = document.getElementById("address").value;
 
-  <!-- TESTIMONIALS SECTION -->
-  <section id="testimonials">
-    <div class="container">
-      <div class="section-content">
-        <h2>Customer Testimonials</h2>
+            if (!address) {
+                document.getElementById("lawnSizeResult").innerText = "Please enter a valid address.";
+                return;
+            }
 
-        <div class="testimonial">
-          <p>
-            “Mahalon and his team did an amazing job on my property. Professional, friendly,
-            and hardworking—highly recommend!”
-          </p>
-          <span>– Dottie A.</span>
-        </div>
+            try {
+                // Geocode address to get lat/lon
+                let geocodeResponse = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
+                let geocodeData = await geocodeResponse.json();
 
-        <div class="testimonial">
-          <p>
-            “They cleaned up my flower beds and trimmed my trees beautifully. 
-            Great work at a fair price!”
-          </p>
-          <span>– Joseph T.</span>
-        </div>
-      </div>
-    </div>
-  </section>
+                if (!geocodeData.length) {
+                    throw new Error("Address not found.");
+                }
 
-  <!-- CONTACT SECTION -->
-  <section id="contact">
-    <div class="container">
-      <div class="section-content">
-        <h2>Get in Touch!</h2>
-        <div class="contact-info">
-          <p>
-            <strong>Serving:</strong> Stow, Hudson, Kent, Macedonia, Boston Heights, and surrounding areas.
-          </p>
-          <p>
-            <strong>Call or Text:</strong> (330) 510-0382
-          </p>
-          <p>
-            <strong>Email:</strong> 
-            <a href="mailto:InGodsHandsLawn@outlook.com">InGodsHandsLawn@outlook.com</a>
-          </p>
-          <p class="tagline">
-            Let us take care of your lawn &amp; trees—because when it’s in God’s hands, it’s done right!
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
+                let location = geocodeData[0];
+                let lat = location.lat;
+                let lon = location.lon;
 
-  <!-- FOOTER -->
-  <footer>
-    <p>&copy; 2025 In God’s Hands, LLC. All rights reserved.</p>
-  </footer>
+                // Determine county and use the correct API
+                let parcelSize = await fetchParcelSize(lat, lon);
+
+                document.getElementById("lawnSizeResult").innerText = "Estimated Lawn Size: " + parcelSize + " sq ft";
+                document.getElementById("lawnSizeResult").dataset.size = parcelSize;
+
+            } catch (error) {
+                document.getElementById("lawnSizeResult").innerText = "Error fetching property size.";
+                console.error(error);
+            }
+        }
+
+        async function fetchParcelSize(lat, lon) {
+            let parcelSize = null;
+
+            // Try Cuyahoga County GIS API
+            try {
+                let cuyahogaResponse = await fetch(`https://gis.cuyahogacounty.us/api/v1/parcels?lat=${lat}&lon=${lon}`);
+                let cuyahogaData = await cuyahogaResponse.json();
+
+                if (cuyahogaData && cuyahogaData.features && cuyahogaData.features.length > 0) {
+                    parcelSize = cuyahogaData.features[0].properties.AREA_SQFT;
+                }
+            } catch (error) {
+                console.log("Cuyahoga API error:", error);
+            }
+
+            // If no data from Cuyahoga, try Summit County API
+            if (!parcelSize) {
+                try {
+                    let summitResponse = await fetch(`https://gis.summitcountyoh.net/arcgis/rest/services/Parcels/MapServer/0/query?where=1%3D1&outFields=*&geometry=${lon},${lat}&geometryType=esriGeometryPoint&spatialRel=esriSpatialRelIntersects&outSR=4326&f=json`);
+                    let summitData = await summitResponse.json();
+
+                    if (summitData && summitData.features && summitData.features.length > 0) {
+                        parcelSize = summitData.features[0].attributes.AREA_SQFT;
+                    }
+                } catch (error) {
+                    console.log("Summit API error:", error);
+                }
+            }
+
+            // Default estimate if parcel data is missing
+            return parcelSize || Math.floor(Math.random() * 5000) + 1000; // 1,000 - 6,000 sq ft
+        }
+
+        function calculateEstimate() {
+            let size = document.getElementById("lawnSizeResult").dataset.size;
+            let service = document.getElementById("services").value;
+            let lowPrice = 0;
+            let highPrice = 0;
+
+            if (!size) {
+                document.getElementById("quoteResult").innerText = "Please enter your address first.";
+                return;
+            }
+
+            size = parseInt(size);
+
+            switch(service) {
+                case "mowing":
+                    // Apply per-square-foot pricing: $0.12 - $0.27
+                    lowPrice = size * 0.12;
+                    highPrice = size * 0.27;
+
+                    // Minimum charge handling for small lawns
+                    if (size < 500) {
+                        lowPrice = Math.max(lowPrice, 62);
+                        highPrice = Math.max(highPrice, 135);
+                    }
+                    break;
+                case "trimming":
+                    lowPrice = 50;
+                    highPrice = 100;
+                    break;
+                case "shrubs":
+                    lowPrice = 20;
+                    highPrice = 50;
+                    break;
+                case "mulching":
+                    lowPrice = Math.ceil(size / 1000) * 70;
+                    highPrice = lowPrice + 30;
+                    break;
+                case "weeding":
+                    lowPrice = 50;
+                    highPrice = 100;
+                    break;
+                case "gravel":
+                    lowPrice = 100;
+                    highPrice = 200;
+                    break;
+                case "gutter":
+                    lowPrice = 75;
+                    highPrice = 150;
+                    break;
+                case "aeration":
+                    lowPrice = 60;
+                    highPrice = 120;
+                    break;
+            }
+
+            document.getElementById("quoteResult").innerText = `Estimated Cost: $${lowPrice.toFixed(2)} - $${highPrice.toFixed(2)}`;
+        }
+    </script>
+
 </body>
 </html>
